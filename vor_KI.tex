@@ -218,9 +218,127 @@ eine Hornformel ist, lässt sich $A\vee B \rightarrow C$ in Prolog darstellen.
 $\vee$-Operator: "`;"'\\*
 Beispiel $\text{haustier}(X) :- \text{katze} (X); \text{hund}(x)$
 
+\subsection{Unterschied zwischen Prolog und imperativen Programmiersprachen}
+Eine Variable kann sowohl Ergebnis als auch Ausgabe sein.
 
+\subparagraph{Beispiel}
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+katze(reni).
+katze(mimi).
+? - katze(reni).
+true.
+? - X=reni, katze(X).
+true.
+? - katze(X).
+X=reni;
+X=mimi.
+\end{lstlisting}
 
+\subsection{Behandlung von Existenzquantoren}
+Da in Prolog alle Variablen allquantisiert sind, können existenzquantifizierte Variablen nicht unmittelbar dargestellt werden. Existenzquantoren können jedoch durch Skolemisierung. Dazu wird die Formel zuerst in bereinigte Pränexform gebracht.
+\subparagraph{Einfacher Spezialfall} Die Formel in bereinigter Pränexform hat die Gestalt \[\exists x \; P(x)\]
+Diese kann erfüllbarkeitsäquivalent dargestellt werden durch \[P(a)\] wobei $a$ eine noch nicht verwendete Konstante ist (Skolemkonstante).
+\subparagraph{Weiterer Fall} Wenn die Formel die Gestalt
+\[\forall x \exists y P(x,y)\]
+besitzt, dann lässt sich diese erfüllbarkeitsäquivalent darstellen durch
+\[P(x,f(x))\]
+wobei $f$ ein noch nicht verwendetes Funktionssymbol ist (Skolemfunktion).
 
+\subsection{Auswertestrategie von Prolog}
+Die Struktur eines Prolog-Programms lässt sich durch einen Und-Oder-Baum darstellen.
+\subsubsection{Und-Verknüpfung}
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+a(X) :- b(X),c(X),d(X).
+\end{lstlisting}
+[Bei folgendem Baum fehl noch ein Bogen um die Wurzel]\\*
+\begin{tikzpicture} 
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+\node{$a(X)$}%TODO Kreis-Bogen um die Zweige (Zentrum root) als Und Konvetion
+    child{node{$b(X)$}}
+    child{node{$c(X)$}}
+    child{node{$d(X)$}}
+    ;
+\end{tikzpicture}\\
+Für die Anfrage $a(X)$ werden die Teilziele $b(X),c(X),d(X)$ erzeugt, die alle wahr sein müssen.
+\subsubsection{Oder-Verknüpfung}
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+a(X) :- b(X);c(X);d(X).
+\end{lstlisting}
+\begin{tikzpicture} 
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+\node{$a(X)$}%ohne Kreisbogen
+    child{node{$b(X)$}}
+    child{node{$c(X)$}}
+    child{node{$d(X)$}}
+    ;
+\end{tikzpicture}\\
+Die Anfrage $a(X)$ ist wahr genau dann, wenn eines der Teilziele wahr ist $b(X),c(X),d(X)$ wahr ist.
+
+\subsubsection{Suche nach einer Lösung} (d.h. $X$ ist nicht instanziert):\\
+$X$ wird nach unten weitergereicht, bis es auf einer Blattebene an eine Konstante gebunden wird, mit der das zugehörige Teilziel war wird. Der so gefundene Lösungskandidat wird dann nach oben propagiert und für weitere Teilziele verwendet.\\
+Bei folgendem Baum fehl noch ein Bogen um die Wurzel:\\*
+\begin{tikzpicture} 
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+\node{$a(X)$}%TODO Kreis-Bogen um die Zweige (Zentrum root) als Und Konvetion
+    child{node{$b(X)$}%TODO 2015-03-30T12:03
+        child{node{$b(r)$}}
+        }
+    child{node{$c(X)$}}
+    ;
+\end{tikzpicture}\\
+Wenn mit dem gefunden Kandidaten weitere, mit $\wedge$ verknüpfte Teilziele nicht erfüllbar werden, sucht Prolog nach weiteren Lösungen. Dazu wird eine Tiefensuche mit Backtracking ausgeführt.
+
+\subparagraph{Beispiel} Aufgabe 4
+Anfrage: $\text{nass}(\text{hochschulstraße})$\\
+Bei folgendem Baum fehl noch ein Bogen um die Wurzel:\\*
+\begin{tikzpicture} 
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+\node{$\text{nass}(\text{hochschulstraße})$}%TODO Kreis-Bogen um die Zweige (Zentrum root) als Und Konvetion
+    child{node{$\text{straße}(\text{hochschulstraße},y)$}%TODO 2015-03-30T12:03
+        child{node{$\text{straße}(\text{hochschulstraße},\text{dresden})$}}
+        }
+    child{node{$\text{regnet}(y)$}
+        child{node{$\text{regnet}(\text{dresden})$}}
+        }
+    ;
+\end{tikzpicture}\\
+
+\paragraph{Definition}
+Zwei Atome $P,Q$ heißen \underline{unifizierbar}, wenn es eine Ersetzung der in $P,Q$ verkommenden Variablen gibt, so dass $P \equiv Q$.
+
+\subparagraph{Beispiel} $\text{regnet}(y),\text{regnet}(\text{dresden})$ sind unifizierbar durch $y / \text{dresden}.$\\ $P(a,X,Y),P(a,b,c)$ sind unifizierbar durch $X/b,Y/c.$\\ $P(X,X),P(a,b)$ sind nicht unifizierbar.
+
+\subsubsection{Durchsuchen des Baums} Für ein Ziel $P$ wird das Prolog-Programm von oben nach unten durchsucht, bis eine linke Seite einer Klausel(Kopf) mit $P$ unifiziert. Dadurch wird ein neues Ziel erzeugt. Wenn dieses neue Ziel false liefert, wird ein Backtracking ausgeführt, indem eine weitere linke Seite gesucht wird, die mit dem Ziel unifiziert. Innerhalb jeder Klausel wird die rechte Seite von links nach rechts durchsucht.
+\paragraph{Problem bei der Tiefensuche}
+Beispiel: 
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+zug(X,Y) :- zug(Y,X).
+zug(1,2).
+?- zug(2,1).
+\end{lstlisting}
+Suchbaum\\
+\begin{tikzpicture} 
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+\node{zug(2,1)}
+        child{node{zug(1,2)}
+            child{node{zug(2,1)}
+                child{node{\dots}}
+            }
+        }
+    ;
+\end{tikzpicture}\\
+Da der Suchbaum unendlich ist, liefert die Tiefensuche keine Lösung.
+
+Lösung: Klauseln anders anordnen: Abbruchbedingung der Rekursion nach oben:
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+zug(1,2).
+zug(X,Y) :- zug(Y,X)
+\end{lstlisting}
 
 
 
