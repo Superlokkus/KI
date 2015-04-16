@@ -340,8 +340,74 @@ zug(1,2).
 zug(X,Y) :- zug(Y,X)
 \end{lstlisting}
 
+Die Auswertestrategie von oben nach unten lässt sich nutzen, um ein if-else zu implementieren.
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+strasse(regen,nass).
+strasse(X,trocken) :- X \== regen.
+?-strasse(sonne,Y).
+y=trocken.
+\end{lstlisting}
 
-
+\section{Computeralgebra}
+\subsection{Arithmetik in Prolog}
+Arithmetische Ausdrücke werden mit dem Operator "`is"' ausgewertet. Dabei muss die rechte Seite instanztiiert sein. Beispiel
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+?- X is 3+4.
+X=7.
+? 10 is 1+2.
+false.
+? 2 is 1+X.
+Error.
+\end{lstlisting}
+\subparagraph{Beispiel} Berechnung von $n!$
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+fac(0,1).
+fac(N,M) :- N1 is N-1,
+            fac(N1,F),
+            M is N * F.
+\end{lstlisting}
+\begin{tabular}{c|c|c}
+Vergleichsoperatoren & Bedeutung & Beispiel\\ \hline
+$==$ & identisch & $p(X) == p(X)$\\
+$\backslash ==$ & nicht identisch & $p(X) \backslash == p(Y)$ \\
+$=$ & unifizierbar & $p(X) = p(Y)$ \\
+$\backslash = $ & nicht unifizierbar & $p(X) \backslash = q(X)$\\
+$=:=$ & arithmetisch gleich & $2 =:= 1+1$\\
+$= \backslash =$ & arithmetisch ungleich & $3 = \backslash = 1+1$\\
+\end{tabular}\\
+Prolog ist in der Lage, mit Hilfe des Unifikationsoperators arithmetische Ausdrücke zu zerlegen, wobei die Priorität der Operatoren beachtet wird.
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+? - x + 3 * y = A+B.
+A=x, B=3*y.
+? x+y+z = A+B.
+A= x+y, B = z.
+\end{lstlisting}
+\paragraph{Anwendung} Symbolisches Differenzieren \[\frac{dx}{dx} = 1 \wedge \frac{c}{dx} = 0 \wedge \frac{dx \cdot c}{dx} = \frac{dx}{dx} \cdot c \wedge \frac{d(f\pm g)}{dx} = \frac{df}{dx} \pm \frac{dg}{dx}\]
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+diff(X,X,1).
+diff(C,X,0) :- atomic(C), C \== X.
+diff(-F,X,-DF) :- diff(F,X,DF).
+diff(C*F,X,C*DF) :- diff(C,X,0), diff(F,X,DF).
+diff(F+G,X,DF+DG) :- diff(F,X,DF), diff(G,X,DG).
+diff(F-G,X,DF-DG) :- diff(F,X,DF), diff(G,X,DG).
+\end{lstlisting}
+Wie lassen sich Terme wie $1*x+0$ vereinfachen?\\*
+Ansatz: Prädikat $s/2$
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+s(0+A,A).
+s(A+0,B) :- s(A,B).
+s(1*A,A).
+s(A*1,A).
+s(A*0,0).
+s(0*A,0).
+s(A+B,C) :- number(A), number(B), C is A+B.
+s(A-B,C) :- number(A), number(B), C is A-B.
+s(A*B,C) :- number(A), number(B), C is A*B.
+s(A/B,C) :- number(A), number(B), C is A/B.
+s(A+B,C) :- s(A,SA),s(B,SB),s(SA+SB,C).
+s(A,A).
+\end{lstlisting}
+Idee: Mit dem Prädikat $s/2$ werden die Terme rekursiv zerlegt, mit $s0/2$ werden elementare Vereinfachungen vorgenommen. Dadurch wird von oben nach unten ein Syntaxbaum aufgebaut und von unten nach oben vereinfacht.
 
 
 
