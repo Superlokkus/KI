@@ -1,4 +1,4 @@
-:- consult(simplify.pl).
+%consult(simplify.pl).
 diff(X,X,1).
 diff(C,X,0) :- atomic(C), C \== X.
 diff(-F,X,-DF) :- diff(F,X,DF).
