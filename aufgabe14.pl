@@ -10,11 +10,10 @@ adj0(X,Y) :- member((X,Y), [
 	(17,18), (18,19),
 	(19,24),
 	(21,22), (22,23), (23,24), (24,25)
-
 	]).
 
 goal(25).
 
 :- [dfs].
 
-maze(Start,Hazard) :- dfs3(Start,[Start]).
+maze(Start,Hazard) :- dfs4(Start,[Start],RP), not(member(Hazard,RP)), writeln(RP).
