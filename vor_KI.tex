@@ -11,6 +11,7 @@
 \usepackage{hyperref}
 \usetikzlibrary{arrows,automata}
 \usetikzlibrary{shapes.multipart}
+\usetikzlibrary{calc}
 
 \title{Künstliche Intelligenz}
 \date{SS 2015}
@@ -250,15 +251,15 @@ Die Struktur eines Prolog-Programms lässt sich durch einen Und-Oder-Baum darste
 \begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
 a(X) :- b(X),c(X),d(X).
 \end{lstlisting}
-[Bei folgendem Baum fehl noch ein Bogen um die Wurzel]\\*
 \begin{tikzpicture} 
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
-\node{$a(X)$}%TODO Kreis-Bogen um die Zweige (Zentrum root) als Und Konvetion
-    child{node{$b(X)$}}
+\node(a){$a(X)$}
+    child{node(b){$b(X)$}}
     child{node{$c(X)$}}
-    child{node{$d(X)$}}
+    child{node(d){$d(X)$}}
     ;
+\draw($(a)!0.4!(b)$) to[bend right=20]($(a)!0.4!(d)$);
 \end{tikzpicture}\\
 Für die Anfrage $a(X)$ werden die Teilziele $b(X),c(X),d(X)$ erzeugt, die alle wahr sein müssen.
 \subsubsection{Oder-Verknüpfung}
@@ -278,33 +279,33 @@ Die Anfrage $a(X)$ ist wahr genau dann, wenn eines der Teilziele wahr ist $b(X),
 
 \subsubsection{Suche nach einer Lösung} (d.h. $X$ ist nicht instanziert):\\
 $X$ wird nach unten weitergereicht, bis es auf einer Blattebene an eine Konstante gebunden wird, mit der das zugehörige Teilziel war wird. Der so gefundene Lösungskandidat wird dann nach oben propagiert und für weitere Teilziele verwendet.\\
-Bei folgendem Baum fehl noch ein Bogen um die Wurzel:\\*
 \begin{tikzpicture} 
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
-\node{$a(X)$}%TODO Kreis-Bogen um die Zweige (Zentrum root) als Und Konvetion
-    child{node{$b(X)$}%TODO 2015-03-30T12:03
+\node(a){$a(X)$}
+    child{node(b){$b(X)$}%TODO 2015-03-30T12:03
         child{node{$b(r)$}}
         }
-    child{node{$c(X)$}}
+    child{node(d){$c(X)$}}
     ;
+\draw($(a)!0.4!(b)$) to[bend right=20]($(a)!0.4!(d)$);
 \end{tikzpicture}\\
 Wenn mit dem gefunden Kandidaten weitere, mit $\wedge$ verknüpfte Teilziele nicht erfüllbar werden, sucht Prolog nach weiteren Lösungen. Dazu wird eine Tiefensuche mit Backtracking ausgeführt.
 
 \subparagraph{Beispiel} Aufgabe 4
 Anfrage: $\text{nass}(\text{hochschulstraße})$\\
-Bei folgendem Baum fehl noch ein Bogen um die Wurzel:\\*
 \begin{tikzpicture} 
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
-\node{$\text{nass}(\text{hochschulstraße})$}%TODO Kreis-Bogen um die Zweige (Zentrum root) als Und Konvetion
-    child{node{$\text{straße}(\text{hochschulstraße},y)$}%TODO 2015-03-30T12:03
+\node(a){$\text{nass}(\text{hochschulstraße})$}
+    child{node(b){$\text{straße}(\text{hochschulstraße},y)$}%TODO 2015-03-30T12:03
         child{node{$\text{straße}(\text{hochschulstraße},\text{dresden})$}}
         }
-    child{node{$\text{regnet}(y)$}
+    child{node(d){$\text{regnet}(y)$}
         child{node{$\text{regnet}(\text{dresden})$}}
         }
     ;
+\draw($(a)!0.4!(b)$) to[bend right=20]($(a)!0.4!(d)$);
 \end{tikzpicture}\\
 
 \paragraph{Definition}
@@ -408,6 +409,187 @@ s(A+B,C) :- s(A,SA),s(B,SB),s(SA+SB,C).
 s(A,A).
 \end{lstlisting}
 Idee: Mit dem Prädikat $s/2$ werden die Terme rekursiv zerlegt, mit $s0/2$ werden elementare Vereinfachungen vorgenommen. Dadurch wird von oben nach unten ein Syntaxbaum aufgebaut und von unten nach oben vereinfacht.
+
+\subsection{Listen}
+Listen sind induktiv definiert:
+\begin{itemize}
+\item $[\; ]$ ist die leere Liste
+\item Wenn $H$ ein Element und $T$ eine Liste sind, dann ist $[H|T]$ eine Liste, die aus $H$ und den Elementen in $T$ besteht.
+\end{itemize}
+Alternativ kann die Liste auch in der Form $[x_1,\dots,x_n]$ aufgeschrieben werden.
+\subparagraph{Beispiel} für Listen: $[a,b,c], [a|[b,c]], [a,b,c,1,2,[u,v]]$
+\subparagraph{Beispiel} für ein Prädikat auf einer Liste: $\text{member} /2$ z.B. 
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+member(X,[X|_]).
+member(X,[_|T]) :- member(X,T).
+\end{lstlisting}
+Suchbaum für die Anfrage $\text{member}(b,[a,b,c,]).$:\\*
+\begin{tikzpicture} 
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+\node{member$(b[a,b,c])$}
+        %$X/b,T/[b,c]$
+        child{node{member$(b,[b,c])$}%[b|[c]]
+            child{node{true}}%X/b
+        }
+        
+;
+\end{tikzpicture}
+
+Weiteres Listenprädikat: append$/$3\\
+append$(L1,L2,L3)$ ist wahr genau dann, wenn die Verkettung der Listen $L1,L2$ gleich $L3$ ist.
+\subparagraph{Beispiel} append$([a,b,c],[d,e,f],L)$ liefert $L=[a,b,c,d,e,f]$\\
+append$([1,2,3],L,[1,2,3,4,5])$ liefert $L=[4,5]$\\
+append$(L1,L2,[1,2,3])$ liefert $L1 = [], L2=[1,2,3]; L1=[1], L2=[2,3];$ usw.
+
+\section{Sprachverarbeitung}
+Beispielgrammatik:\\*
+\begin{tikzpicture} 
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+\node{Satz}
+        child{node{Nominalphrase}
+            child{node{Artikel}
+                child{node{die}}
+            }
+            child{node{Nomen}
+                child{node{katze}}
+            }
+        }
+        child{node{Verbalphrase}
+            child{node{Verb}
+                child{node{jagt}}
+            }
+            child{node{Nominalphrase}
+                child{node{Artikel}
+                    child{node{die}}
+                }
+                child{node{Nomen}
+                    child{node{maus}}
+                }
+            }
+        }
+;
+\end{tikzpicture}\\
+Zur Darstellung von Strings verwenden wir Listen, z.B. $[$die,katze,schläft$]$.\\
+Zur Darstellung der Grammatik verwenden wir einen Recursive-Descent-Parser.\\
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+satz(In,Rest) :-
+    nominalphrase(In,R),
+    verbalphrase(R,Rest).
+nominalphrase(In,Rest) :- artikel(In,R), nomen(R,Rest).
+verbalphrase(In,Rest) :- verb(In,R), nominalphrase(R,Rest).
+artikel(In,Rest) :- match(die,In,Rest).
+verb(In,Rest) :- 
+    match(jagt,In,Rest).
+nomen(In,Rest) :-
+    match(katze,In,Rest);
+    match(maus,In,Rest).
+match(X,[X|Rest],Rest).
+\end{lstlisting}
+\subparagraph{Beispiel}
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+match(katze,[katze,schlaeft],R).
+? R= schlaeft.
+match(katze,[maus],R).
+? false.
+\end{lstlisting}
+\subparagraph{Beispiel} Suchbaum für die Anfrage nominalphrase$([\text{die},\text{katze}],[\;])$\\
+\begin{tikzpicture} 
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+\node(a){nominalphrase$([\text{die},\text{katze}],[\;])$}
+    child{node(b){artikel$([\text{die},\text{katze}],R)$} %In/[die,katze], R/[]
+        child{node{match(die,$[$die,katze$]$,R)}
+            child{node{match(die,$[$die,katze$]$,$[$katze$]$)}
+                child{node{true}}
+            }
+        }
+    }
+    child{node(d){nomen($[$katze$]$,$[\;]$)}
+        child{node{match(katze,$[$katze$]$,$[\;]$)}
+            child{node{true}}
+        }
+    }
+
+;
+\draw($(a)!0.4!(b)$) to[bend right=20]($(a)!0.4!(d)$);
+\end{tikzpicture}
+\paragraph{Genus-Kongruenz} Wenn das Nomen "`kater"' und der Artikel "`der"' in obige Grammatik eingefügt werden, können auch grammatikalisch falsche Sätze, wie $[$die,kater,jagt,der,maus$]$ abgeleitet werden.
+\begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
+nominalphrase(In,Rest) :- artikel(In,R,Genus), nomen(R,Rest,Genus).
+artikel(In,Rest,m) :- match(der,In,Rest).
+artikel(In,Rest,f) :- match(die,In,Rest).
+nomen(In,Rest,m) :- match(kater,In,Rest).
+nomen(In,Rest,f) :- 
+    match(katze,In,Rest);
+    match(maus,In,Rest).
+\end{lstlisting}
+\begin{tikzpicture} 
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+\node(a){nominalphrase$([\text{die},\text{katze}],[\;])$}
+    child{node(b){artikel$([\text{die},\text{katze}],R,G)$} %In/[die,katze], R/[]
+        child{node{artikel$([\text{die},\text{katze}],R,f)$}
+            child{node{match(die,$[$die,katze$]$,R)}
+                child{node{match(die,$[$die,katze$]$,$[$katze$]$)}
+                    child{node{true}}
+                }
+            }
+        }
+    }
+    child{node(d){nomen($[$katze$]$,$[\;]$,f)}
+        child{node{match(katze,$[$katze$]$,$[\;]$)}
+            child{node{true}}
+        }
+    }
+
+;
+\draw($(a)!0.4!(b)$) to[bend right=20]($(a)!0.4!(d)$);
+\end{tikzpicture}
+
+\subsection{Wertigkeit von Verben}
+Zwei wichtige Klassen von Verben sind:
+\begin{itemize}
+\item intransitive Verben: Diese zeihen kein Objekt nach sich (z.B. laufen, schlafen)
+\item transitive Verben: Diese benötigen ein Objekt (z.B. sehen, fangen).
+\end{itemize}
+Das Verb bestimmt den Kasus des zugehörigen Objekts. Zum Beispiel benötigen jagen, fangen ein Akkusativobjekt (das Subjekt sieht wen oder was?)
+\subsection{Dialogsystem}
+Drei wichtige Aufgaben eines Dialogsystems
+\begin{itemize}
+\item Frage des Benutzers analysieren und den Sinn verstehen
+\item Eine Antwort suchen
+\item Antwort konstruieren und dem Benutzer antworten.
+\end{itemize}
+Einfacher Ansatz, um die Frage des Benutzers zu verstehen: Grammatik für mögliche Fragen des Benutzers konstruieren, die Parameter für die relevanten Bestandteile der Frage enthält. Anwendbar für einfach und gleichartig strukturierte Fragen, z.B. nach Zugverbindungen.
+Aus der analysierten Frage erzeugt das Dialogsystem eine interne Repräsentation und durchsucht eine Wissensbasis und erzeugt daraus die Antwort.
+\[ \text{place-question} \rightarrow (\text{in} | \varepsilon ) (\text{what} | \text{which} ) \text{Place 1 is the Place 2} (\text{on} | \text{in} | \text{located in} | \varepsilon ) \]
+\[ \text{place 1} \rightarrow \text{street} | \text{town} | \text{city} \]
+\[ \text{place 2} \rightarrow \text{hotel} | \text{restaurant} | \text{shop} \]
+
+\section{Problemlösen durch Suche}
+Viele Probleme der KI lassen sich auf eine systematische Suche in einem Wurzelbaum reduzieren.\\
+Problem: Riesige Anzahl von Knoten in typischen Suchbäumen.
+\subparagraph{Beispiel} Schach: Ca 30 Möglichkeiten pro Halbzug. Bei 50 Halbzügen enthält der Suchbaum $\sum\limits_{d=0}^{50} 30^d = \frac{30^{51}-1}{30-1} \approx 7,4 \cdot 10^{73}$ Knoten.\\
+Bei 10000 Computern, die $10^9$ Knoten $s^{-1}$ erzeugen und durchsuchen können, ergibt sich für die Rechenzeit $2,3 \cdot 10^{53}$ Jahre.
+
+\subsection{Uninformierte Suche}
+Bereits bekannt: Breiten- und Tiefensuche\\
+findall(X,P,L): sucht alle X, für die P wahr ist, und erzeugt daraus die Liste L.\\*
+not(P): ist wahr genau dann, wenn P false liefert (Negation by failure).
+
+Nachteil der Breitensuche: Exponentieller Speicherbedarf für Suchbäume.\\*
+Nachteil der Tiefensuche, wenn bereits besuchte Knoten nicht speichert werden: Zyklen möglich.
+
+Lösung: In der Tiefensuche werden nur die Knoten auf dem aktuellen Pfad gespeichert. Der Platzbedarf liegt dann in $\mathcal{O}(d)$, wobei $d$ die Länge des aktuellen Pfades ist.
+
+
+
+
+
+
+
 
 
 
