@@ -1,8 +1,4 @@
-% Adjazenzrelation des ungerichteten Graphen (nicht effizient)
-adj(X,Y) :- adj0(X,Y); adj0(Y,X).
-adj0(X,Y) :- member((X,Y), [(1,2), (2,4), (2,5), (3,4), (3,6), (4,5)]).
 
-goal(6).
 
 % Tiefensuche - alle besuchten Knoten werden gespeichert
 dfs1([H|T], Discovered) :-
