@@ -579,10 +579,104 @@ Bereits bekannt: Breiten- und Tiefensuche\\
 findall(X,P,L): sucht alle X, für die P wahr ist, und erzeugt daraus die Liste L.\\*
 not(P): ist wahr genau dann, wenn P false liefert (Negation by failure).
 
-Nachteil der Breitensuche: Exponentieller Speicherbedarf für Suchbäume.\\*
-Nachteil der Tiefensuche, wenn bereits besuchte Knoten nicht speichert werden: Zyklen möglich.
+\subsubsection{Nachteil der Breitensuche} Exponentieller Speicherbedarf für Suchbäume.
+\subsubsection{Nachteil der Tiefensuche} 
+\begin{itemize}
+\item Wenn bereits besuchte Knoten nicht speichert werden: Zyklen möglich.
 
 Lösung: In der Tiefensuche werden nur die Knoten auf dem aktuellen Pfad gespeichert. Der Platzbedarf liegt dann in $\mathcal{O}(d)$, wobei $d$ die Länge des aktuellen Pfades ist.
+
+\item Der gefundene Weg ist nicht notwendig der kürzeste Weg.
+
+\item Die Tiefensuche kann sich in unendlichen oder sehr langen Pfaden verlieren.
+
+\end{itemize}
+
+\subsection{Iterative Tiefensuche (IDDFS, Iterative Deepering Depth First Search)} 
+Wir verwenden eine Tiefenschranke, die sukzessive erhöht wird, bis das Ziel gefunden wird.\\
+Da in einem Suchbaum mit Verzweigungsfaktor $b>1$ fast alle Knoten Blätter sind, fällt die meiste Rechenzeit zum Durchsuchen der Blattebene an. Durch eine genaue Rechnung lässt sich zeigen, dass die Laufzeit der iterativen Tiefensuche nur einen kleinen Faktor höher ist, als die der Tiefensuche.
+
+\subsection{Planungsprobleme}
+\paragraph{Gegeben} Regeln, wie Zustände verändert werden können,
+Startzustand und Zielzustand.
+\paragraph{Gesucht} Weg vom Start zum Ziel.
+\subparagraph{Beispiel} Affe-Banane-Problem: Gegen sei ein Raum mit einer Tür, einem Fenster, einem Affen und einer Banane. Im Ausgangszustand ist der Affe an der Tür, auf der gegenüber liegenden Seite ist das Fenster mit dem Stuhl in einer Ecke am Fenster und die Banane hängt in der Mitte des Raums von der Decke.\\
+Problem: Der Affe ist nicht hoch genug um die Banane direkt zu greifen.\\
+Regeln. Affe kann herumlaufen, den Stuhl verschieben, auf den Stuhl steigen.\\
+Ziel: Affe auf dem Stuhl, unter der Banane.
+
+Repräsentation eines Zustands, bzw. Knoten des Graphen:
+\begin{itemize}
+\item Position des Affen
+\item Position des Stuhls
+\item Position der Banane
+\item Affe auf Stuhl
+\end{itemize} [Anmerkung: Knoten repräsentieren somit den Gesamtzustand des Raumes]\\
+Positionen: Tür, Mitte, Fenster.\\
+Die Kanten des Graphen sind durch Regeln gegeben.
+
+\subsection{Informierte bzw. heuristische Suche}
+\paragraph{Ziel} Informationen über das Suchproblem nutzen, um schneller zum Ziel zu kommen. Dazu wird eine Bewertungsfunktion für die Knoten verwendet.\\
+Die heuristische Suche verwendet eine heuristische Bewertungsfunktion \[ f: V \rightarrow \mathbb{R}_0^+ \]
+Für den Zielknoten $v$ gilt : \[ f(v) = 0\] Die Knoten mit der niedrigsten Bewertung werden zuerst verfolgt.
+
+\subsubsection{Gierige Suche}
+Die gierige Suche verwendet in jedem Schritt den Knoten, der dem Ziel am nächsten liegt bzw., der die günstigste Entfernungsschätzung bis zum Ziel hat.
+\subparagraph{Beispiel} Suche nach Wegen zu einem Ort.
+Heuristische Bewertungsfunktion: $f(s) =$ Luftlinienentfernung von $s$ zum Ziel.\\
+\begin{tikzpicture} 
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+\node{A}
+    child{node(C){C}}
+    child{node(B){B}};
+    
+\node{Z};
+\end{tikzpicture}\\
+Die kürzeste Strecke von A nach Z ist A-B-Z (100km). Wenn $f(C) < f(B)$, findet die gierige Suche jedoch die Strecke A-C-Z, die 11 km länger ist. 
+\subparagraph{Folgerung} Die gierige Suche ist nicht optimal.
+
+\subsection{$A^*$-Suche}
+Die gierige Suche berücksichtigt nicht die Kosten, die bis zum Knoten $s$ bereits entstanden sind. Wir führen daher eine Funktion $g$ ein, die diese Kosten angibt, und eine Funktion $h$, die die Kosten bis zum Ziel schätzt.\\
+Damit definieren wir die heuristische Bewertungsfunktion $f$ durch \[f(s) = g(s) + h(s)\]
+Obige gierige Suche ist der Spezialfall $g(s) = 0, h(s) =$ Luftlinienentfernung bis zum Ziel.
+
+\paragraph{Definition} Eine heuristische Kostenschätzfunktion $h$ heißt zulässig, wenn $h$ die Kosten bis zum Ziel nie überschätzt.\\
+D.h. es gilt stets $h(s) \leq$ tatsächliche Entfernung von $s$ bis zum Ziel.
+
+Die $A^*$-Suche ist folgender Algorithmus:\\*
+Für den aktuellen Knoten $v$ werden die noch unbesuchten Nachbarn bestimmt und anhand ihrer heuristischen Bewertungsfunktion $f$, die wie oben konstruiert sein muss, in eine geeignete Datenstruktur eingefügt. In jedem Schritt wird die Suche mit einem Knoten mit minimaler Bewertung weitergeführt.
+
+\paragraph{Naive Implementierung} Wie bei der Breitensuche werden die noch zu besuchenden Knoten in einer Liste gespeichert. Diese wird anhand der $f$-Werte der Knoten sortiert, so dass am Kopf der Liste Knoten mit minimaler Bewertung steht.
+
+\paragraph{Effiziente Implementierung} Ein \emph{Min-Heap} ist ein Binärbaum mit der Eigenschaft: Jeder Knoten besitzt einen Wert, der $\leq$ der Werte seiner Nachfolger ist.
+
+\subparagraph{Beispiel}
+\begin{tikzpicture} 
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+\node{1}
+    child{node{3}
+        child{node{8}}
+        child{node{6}}
+        }
+    child{node{5}
+        child{node{7}}
+    }
+
+;
+\end{tikzpicture}\\
+Die Heap-Operationen
+\begin{itemize}
+\item Entfernen der Wurzel
+\item Hinzufügen eines neuen Knotens
+\end{itemize} benötigen die Laufzeit $\mathcal{O} (\log{(n)})$
+
+Die $A^*$-Suche ist optimal, vorausgesetzt, die Kostenschätzfunktion $h$ ist zulässig.\\
+Vorteil der $A^*$-Suche: Bei guter Heuristik wird das Ziel oft deutlich schneller gefunden als mit einer uninformierten Suche.\\
+Nachteil: Wie bei der Breitensuche müssen im Worst-Case alle Knoten im Speicher gehalten werden.
+
+
 
 
 
