@@ -16,5 +16,5 @@ kind(X,Y,Z) :- sohn(X,Y,Z) ; tochter(X,Y,Z).
 bruder(X,Y) :- sohn(X,Z1,Z2), kind(Y,Z1,Z2), X\== Y.
 schwester(X,Y) :- tochter(X,Z1,Z2), kind(Y,Z1,Z2), X\== Y.
 enkel(EN,E1) :- kind(EN,K1,K2), kind(K1,E1,E2), kind(K2,E1,E2).
-onkel(B1,K) :- bruder(B1,E1), kind(K,E1,E2).
-tante(B1,K) :- schwester(B1,E1), kind(K,E1,E2).
+onkel(B1,K) :- bruder(B1,E1), kind(K,E1,_E2).
+tante(B1,K) :- schwester(B1,E1), kind(K,E1,_E2).
