@@ -30,10 +30,10 @@ beziehung(P1,P2,In,Antwort) :-
 (schwester(P1,P2), match(schwester,In,Rest),append([ja],Rest,Antwort));
 (not(schwester(P1,P2)), match(schwester,In,Rest),append([nein],Rest,Antwort)).
 
-%istSatz(In,Rest) :- 
+%istSatz(In,Antwort) :- numerus(In,R1), person(P1,R1,R2)
 
 sindSatz(In,Antwort) :- 
-numerus(In,R1), person(P1,R1,R2), aufzaehler(R2,R3), 
+match(sind,In,R1), person(P1,R1,R2), aufzaehler(R2,R3), 
 person(P2,R3,R4), paarverb(R4,R5), beziehung(P1,P2,R5,Antwort).
 
 frage(Frage,Antwort) :- sindSatz(Frage,Antwort).
