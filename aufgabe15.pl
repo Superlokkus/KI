@@ -2,7 +2,8 @@
 
 verwandt0(X,Y) :- kind(X,Y,_Z); kind(X,_Z,Y); 
 	bruder(X,Y); schwester(X,Y); enkel(X,Y); onkel(X,Y); tante(X,Y).
-verwandt(X,Y) :-  verwandt0(X,Y) ; verwandt0(Y,X).
+verwandt(X,Y) :-  verwandt0(X,Y) ; verwandt0(Y,X);
+(verwandt(X,_Z), verwandt(_Z,Y)).
 
 verheiratet(X,Y) :- kind(_Z,X,Y) ; kind(_Z,Y,X).
 
