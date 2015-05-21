@@ -12,13 +12,13 @@ match(X,[X|Rest],Rest).
 
 person(X,[X|Rest],Rest) :- person0(X).
 
-numerus(In,Rest) :- match(sind,In,Rest); match(ist,In,Rest).
-aufzaehler(In,Rest) :- match(und,In,Rest).
 paarverb(In,Rest) :- match(miteinander,In,Rest); 
 match(zusammen,In,Rest); In=Rest.
 artikel(In,Rest) :- match(ein,In,Rest); match(die,In,Rest); 
 match(eine,In,Rest); match(der,In,Rest).
 bezugswort(In,Rest) :- match(von,In,Rest).
+beziehungswort(B,In,Rest) :- (match(bruder,In,Rest),B=[bruder]);(
+match(schwester,In,Rest),B=[schwester]).
 
 beziehung(P1,P2,In,Antwort) :- 
 (verheiratet(P1,P2), match(verheiratet,In,Rest),append([ja],Rest,Antwort));
@@ -30,10 +30,12 @@ beziehung(P1,P2,In,Antwort) :-
 (schwester(P1,P2), match(schwester,In,Rest),append([ja],Rest,Antwort));
 (not(schwester(P1,P2)), match(schwester,In,Rest),append([nein],Rest,Antwort)).
 
-%istSatz(In,Antwort) :- numerus(In,R1), person(P1,R1,R2)
+istSatz(In,Antwort) :- match(ist,In,R1), person(P1,R1,R2), artikel(R2,R3),
+beziehungswort(B,R3,R4), match(von,R4,R5), 
+person(P2,R5,R6), beziehung(P1,P2,B,Antwort).
 
 sindSatz(In,Antwort) :- 
-match(sind,In,R1), person(P1,R1,R2), aufzaehler(R2,R3), 
+match(sind,In,R1), person(P1,R1,R2), match(und,R2,R3), 
 person(P2,R3,R4), paarverb(R4,R5), beziehung(P1,P2,R5,Antwort).
 
-frage(Frage,Antwort) :- sindSatz(Frage,Antwort).
+frage(Frage,Antwort) :- sindSatz(Frage,Antwort); istSatz(Frage,Antwort).
