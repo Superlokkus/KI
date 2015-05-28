@@ -10,6 +10,7 @@ tochter(julia,robert,sandra).
 tochter(jutta,robert,sandra).
 tochter(anne,jan,eva).
 tochter(anke,jan,eva).
+tochter(sophie,jan,anne).
 
 
 kind(X,Y,Z) :- sohn(X,Y,Z) ; tochter(X,Y,Z).
