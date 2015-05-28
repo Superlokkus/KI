@@ -18,16 +18,20 @@ adj0(X,Y) :- member((X,Y), [
 %Mann = 7.
 
 zweig(Start,Ziele,Weg,Depth) :-
-	%(length(Ziele,Y), Y == 0);
-	%select(AktZiel,Ziele,RestZiele),
-	foreach(member(Z,Ziele),dlDfs(Start,Z,[Start], Depth, Weg)).
-	%length(ReturnPath,D),
-	%select(_Dup,ReturnPath,RP),
-	%append(Weg,RP,L),
-	%zweig(AktZiel,RestZiele,L,Depth - D).
+	(length(Ziele,Y), Y == 0),writeln(Weg);
+	subset(Weg,[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]),
+	selectchk(AktZiel,Ziele,RestZiele),
+	dlDfs(Start,AktZiel,[Start], Depth, ReturnPath),
+	length(ReturnPath,D),
+	select(_Dup,ReturnPath,RP),
+	append(Weg,RP,L),
+	zweig(AktZiel,RestZiele,L,Depth - D).
 
 
 sammeln0(Start,Frau,Blumen,Weg,Depth) :-
-	sammeln1(Start, , X|Blumen, D, ReturnPath).
+	permutation(P,Blumen),append(P,[Frau],G),
+	zweig(Start,G,Weg,Depth);
+	writeln(Depth),
+	sammeln0(Start,Frau,Blumen,Weg,Depth+1).
 
 sammeln(Start,Frau,Blumen,Weg) :- sammeln0(Start,Frau,Blumen,Weg,1).
