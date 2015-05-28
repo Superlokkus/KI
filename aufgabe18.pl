@@ -18,13 +18,13 @@ adj0(X,Y) :- member((X,Y), [
 %Mann = 7.
 
 zweig(Start,Ziele,Weg,Depth) :-
-	(length(Ziele,Y), Y == 0);
-	select(AktZiel,Ziele,RestZiele),
-	dlDfs(Start,AktZiel,[Start], Depth, ReturnPath),
-	length(ReturnPath,D),
-	select(_Dup,ReturnPath,RP),
-	append(Weg,RP,L),
-	zweig(AktZiel,RestZiele,L,Depth - D).
+	%(length(Ziele,Y), Y == 0);
+	%select(AktZiel,Ziele,RestZiele),
+	foreach(member(Z,Ziele),dlDfs(Start,Z,[Start], Depth, Weg)).
+	%length(ReturnPath,D),
+	%select(_Dup,ReturnPath,RP),
+	%append(Weg,RP,L),
+	%zweig(AktZiel,RestZiele,L,Depth - D).
 
 
 sammeln0(Start,Frau,Blumen,Weg,Depth) :-
