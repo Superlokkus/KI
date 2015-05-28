@@ -18,7 +18,7 @@ adj0(X,Y) :- member((X,Y), [
 %Mann = 7.
 
 zweig(Start,Ziele,Weg,Depth) :-
-	(length(Ziele,Y), Y == 0), writeln(Weg);
+	(length(Ziele,Y), Y == 0);
 	select(AktZiel,Ziele,RestZiele),
 	dlDfs(Start,AktZiel,[Start], Depth, ReturnPath),
 	length(ReturnPath,D),
