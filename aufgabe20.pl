@@ -5,12 +5,12 @@ adj(X,Y) :- adj0(X,Y); adj0(Y,X).
 ort(X) :- member(X,[berlin,dresden]).
 
 adj0([STA,STM,SA,SM,ZA,ZM,Ort1], [STA,STM,SA,SM,ZA,ZM,Ort2]) :-
-	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),
+	number(SA),number(SM),
 	ort(Ort1), ort(Ort2), (SA > 0; SM > 0). %Fahren
 
 adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
 	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
-	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	number(STA),
 	start(Ort), 
 	(
 		STA > 0,
@@ -25,7 +25,7 @@ adj0([STA,STM,SA,SM,ZA,ZM,Ort],
 	. %Einsteigen Start A
 adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
 	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
-	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	number(STM),
 	start(Ort),
 	(
 		STM > 0,
@@ -40,7 +40,7 @@ adj0([STA,STM,SA,SM,ZA,ZM,Ort],
 
 adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
 	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
-	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	number(SA),
 	ziel(Ort),
 	(
 		SA > 0,
@@ -55,23 +55,23 @@ adj0([STA,STM,SA,SM,ZA,ZM,Ort],
 	 			%Aussteigen ziel A
 adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
 	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
-	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	number(SM),
 	ziel(Ort),
 	(
 		SM > 0,
 		NZM is ZM + 1,
 		NSM is SM -1,
-		NZM = ZM,
-		SM  = NSM,
 		STA = NSTA,
-		STM = NSTM
+		STM = NSTM,
+		NZA = ZA,
+		NSA = SA
 	), (NSA + NSM) =< 2,
 	(NSTA =< NSTM; NSTM =:= 0), (NSA =< NSM; NSM =:=0), (NZA =< NZM; NZM =:=0).
 	 			%Aussteigen ziel M
 
 adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
 	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
-	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	number(SA),
 	start(Ort),
 	(
 		SA > 0,
@@ -85,7 +85,7 @@ adj0([STA,STM,SA,SM,ZA,ZM,Ort],
 	(NSTA =< NSTM; NSTM =:= 0), (NSA =< NSM; NSM =:=0), (NZA =< NZM; NZM =:=0). %Aussteigen Start A
 adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
 	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
-	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	number(SM),
 	start(Ort),
 	(
 		SM > 0,
@@ -100,7 +100,7 @@ adj0([STA,STM,SA,SM,ZA,ZM,Ort],
 
 adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
 	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
-	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	number(ZA),
 	ziel(Ort),
 	(
 		ZA > 0,
@@ -115,14 +115,14 @@ adj0([STA,STM,SA,SM,ZA,ZM,Ort],
 	 			%Einsteigen ziel A
 adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
 	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
-	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	number(ZM),
 	ziel(Ort),
 	(
 		ZM > 0,
 		NZM is ZM - 1,
 		NSM is SM +1,
-		NZM = ZM,
-		SM  = NSM,
+		NSA = STA,
+		NZA = STA,
 		STA = NSTA,
 		STM = NSTM
 	),(NSA + NSM) =< 2,
