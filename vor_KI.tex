@@ -636,7 +636,7 @@ Heuristische Bewertungsfunktion: $f(s) =$ Luftlinienentfernung von $s$ zum Ziel.
 Die kürzeste Strecke von A nach Z ist A-B-Z (100km). Wenn $f(C) < f(B)$, findet die gierige Suche jedoch die Strecke A-C-Z, die 11 km länger ist. 
 \subparagraph{Folgerung} Die gierige Suche ist nicht optimal.
 
-\subsection{$A^*$-Suche}
+\subsection{$\text{A}^*$-Suche}
 Die gierige Suche berücksichtigt nicht die Kosten, die bis zum Knoten $s$ bereits entstanden sind. Wir führen daher eine Funktion $g$ ein, die diese Kosten angibt, und eine Funktion $h$, die die Kosten bis zum Ziel schätzt.\\
 Damit definieren wir die heuristische Bewertungsfunktion $f$ durch \[f(s) = g(s) + h(s)\]
 Obige gierige Suche ist der Spezialfall $g(s) = 0, h(s) =$ Luftlinienentfernung bis zum Ziel.
@@ -644,7 +644,7 @@ Obige gierige Suche ist der Spezialfall $g(s) = 0, h(s) =$ Luftlinienentfernung 
 \paragraph{Definition} Eine heuristische Kostenschätzfunktion $h$ heißt zulässig, wenn $h$ die Kosten bis zum Ziel nie überschätzt.\\
 D.h. es gilt stets $h(s) \leq$ tatsächliche Entfernung von $s$ bis zum Ziel.
 
-Die $A^*$-Suche ist folgender Algorithmus:\\*
+Die $\text{A}^*$-Suche ist folgender Algorithmus:\\*
 Für den aktuellen Knoten $v$ werden die noch unbesuchten Nachbarn bestimmt und anhand ihrer heuristischen Bewertungsfunktion $f$, die wie oben konstruiert sein muss, in eine geeignete Datenstruktur eingefügt. In jedem Schritt wird die Suche mit einem Knoten mit minimaler Bewertung weitergeführt.
 
 \paragraph{Naive Implementierung} Wie bei der Breitensuche werden die noch zu besuchenden Knoten in einer Liste gespeichert. Diese wird anhand der $f$-Werte der Knoten sortiert, so dass am Kopf der Liste Knoten mit minimaler Bewertung steht.
@@ -672,12 +672,27 @@ Die Heap-Operationen
 \item Hinzufügen eines neuen Knotens
 \end{itemize} benötigen die Laufzeit $\mathcal{O} (\log{(n)})$
 
-Die $A^*$-Suche ist optimal, vorausgesetzt, die Kostenschätzfunktion $h$ ist zulässig.\\
-Vorteil der $A^*$-Suche: Bei guter Heuristik wird das Ziel oft deutlich schneller gefunden als mit einer uninformierten Suche.\\
+Die $\text{A}^*$-Suche ist optimal, vorausgesetzt, die Kostenschätzfunktion $h$ ist zulässig.\\
+Vorteil der $\text{A}^*$-Suche: Bei guter Heuristik wird das Ziel oft deutlich schneller gefunden als mit einer uninformierten Suche.\\
 Nachteil: Wie bei der Breitensuche müssen im Worst-Case alle Knoten im Speicher gehalten werden.
 
+\subsection{$\text{IDA}^*$-Suche}
+\paragraph{Ziel} Vorteile der $A^*$-Suche mit denen der iterativen Tiefensuche kombinieren. Dazu führen wir eine Schranke für die heuristische Bewertungsfunktion $f$ ein und erhöhen diese schrittweise.
 
+\paragraph{Anwendung} 8-Puzzle: %TODO 2015-06-01
+Darstellung als Graph:
+Knoten: Brettstellungen.
+Kanten: geben an, wie durch Verschieben eines Plättchens eine neue Brettstellung erreicht werden kann.
 
+Darstellung einer Brettstellung in Prolog:\\
+Jede Zeile ist eine Liste aus drei Elementen, das Brett eine Liste aus drei Zeilen.
+
+Geeignete Heuristiken für die Suche im 8-Puzzle:
+\begin{enumerate}
+\item Hamming-Distanz: Anzahl der Plättchen die falsch stehen. Diese Heuristik ist zulässig, weil mindestens so viele Verschiebungen notwendig sind, wie Plättchen falsch stehen.
+\item Manhattan- oder Cityblock-Distanz: Anzahl Verschiebungen die nötig sind, um ein Plättchen auf direktem Weg zum Ziel zu schieben, summiert über alle Plättchen.\\
+Diese Heuristik ist zulässig, da für jedes Plättchen mindestens diese Anzahl an Verschiebungen nötig ist.
+\end{enumerate}
 
 
 
