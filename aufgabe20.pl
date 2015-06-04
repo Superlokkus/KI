@@ -3,13 +3,20 @@
 adj(X,Y) :- adj0(X,Y); adj0(Y,X).
 
 ort(X) :- member(X,[berlin,dresden]).
-adj0([STA,STM,SA,SM,ZA,ZM,Ort1], [STA,STM,SA,SM,ZA,ZM,Ort2]) :- 
+adj0([STA,STM,SA,SM,ZA,ZM,Ort1], [STA,STM,SA,SM,ZA,ZM,Ort2]) :-
+	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),
 	ort(Ort1), ort(Ort2), (SA > 0; SM > 0). %Fahren
 
-adj0([STA,STM,SA,SM,ZA,ZM,Ort], [_ is STA-1,_ is STM-1,_ is SA+1,_ isSM+1,ZA,ZM,Ort]) :- 
-	STA > 0, STM >0. %Einsteigen Dual Start
-adj0([STA,STM,SA,SM,ZA,ZM,Ort], [STA,STM,_ is SA-1,_ is SM-1,_ is ZA+1,_ is ZM+1,Ort]) :- 
-	SA >0, SM >0 . %Austeigen Dual Ziel
+adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
+	[NSTA,NSTM,NSA,NSM,ZA,ZM,Ort]) :- 
+	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),
+	STA > 0, STM >0, ort(Ort),
+	NSTA is STA-1,NSTM is STM-1,NSA is SA+1,NSM is SM+1. %Einsteigen Dual Start
+adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
+	[STA,STM,NSA,NSM,NZA,NZM,Ort]) :- 
+	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),
+	SA >0, SM >0, ort(Ort),
+	NSA is SA-1,NSM is SM-1,NZA is ZA+1,NZM is ZM+1. %Austeigen Dual Ziel
 %adj0([STA,STM,SA,SM,ZA,ZM,Ort], [STA-1,STM-1,SA+1,SM+1,ZA,ZM,Ort]) :- 	 . %Einsteigen
 
 
