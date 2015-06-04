@@ -15,26 +15,126 @@ adj0([STA,STM,SA,SM,ZA,ZM,Ort],
 	(NSTA =< NSTM; NSTM =:= 0), (NSA =< NSM; NSM =:=0), (NZA =< NZM; NZM =:=0),
 	(NSA + NSM) =< 2, 
 	(
-		(STA + SA =:= NSTA + NSA),
-		(STM + SM =:= NSTM + NSM),
+		STA > 0,
+		NSTA is STA -1,
+		NSA is STA +1,
+		NSM = SM,
+		NSTM = STM,
 		ZA = NZA,
 		ZM = NZM
-	).
-	 			%Transfer Start
+	). %Einsteigen Start A
+adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
+	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
+	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	start(Ort),
+	(NSTA =< NSTM; NSTM =:= 0), (NSA =< NSM; NSM =:=0), (NZA =< NZM; NZM =:=0),
+	(NSA + NSM) =< 2, 
+	(
+		STM > 0,
+		NSTM is STM -1,
+		NSM is STM +1,
+		NSA = SA,
+		NSTA = STA,
+		ZA = NZA,
+		ZM = NZM
+	). %Einsteigen Start M
 
 adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
 	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
 	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
 	ziel(Ort),
 	(NSTA =< NSTM; NSTM =:= 0), (NSA =< NSM; NSM =:=0), (NZA =< NZM; NZM =:=0),
-	(NSA + NSM) =< 2, 
+	(NSA + NSM) =< 2,
 	(
-		(ZA + SA =:= NZA + NSA),
-		(ZM + SM =:= NZM + NSM),
+		SA > 0,
+		NZA is ZA + 1,
+		NSA is SA -1,
+		NZM = ZM,
+		SM  = NSM,
 		STA = NSTA,
 		STM = NSTM
 	).
-	 			%Transfer ziel
+	 			%Aussteigen ziel A
+adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
+	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
+	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	ziel(Ort),
+	(NSTA =< NSTM; NSTM =:= 0), (NSA =< NSM; NSM =:=0), (NZA =< NZM; NZM =:=0),
+	(NSA + NSM) =< 2,
+	(
+		SM > 0,
+		NZM is ZM + 1,
+		NSM is SM -1,
+		NZM = ZM,
+		SM  = NSM,
+		STA = NSTA,
+		STM = NSTM
+	).
+	 			%Aussteigen ziel M
+
+adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
+	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
+	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	start(Ort),
+	(NSTA =< NSTM; NSTM =:= 0), (NSA =< NSM; NSM =:=0), (NZA =< NZM; NZM =:=0),
+	(NSA + NSM) =< 2, 
+	(
+		SA > 0,
+		NSTA is STA +1,
+		NSA is STA -1,
+		NSM = SM,
+		NSTM = STM,
+		ZA = NZA,
+		ZM = NZM
+	). %Aussteigen Start A
+adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
+	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
+	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	start(Ort),
+	(NSTA =< NSTM; NSTM =:= 0), (NSA =< NSM; NSM =:=0), (NZA =< NZM; NZM =:=0),
+	(NSA + NSM) =< 2, 
+	(
+		SM > 0,
+		NSTM is STM +1,
+		NSM is STM -1,
+		NSA = SA,
+		NSTA = STA,
+		ZA = NZA,
+		ZM = NZM
+	). %Aussteigen Start M
+
+adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
+	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
+	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	ziel(Ort),
+	(NSTA =< NSTM; NSTM =:= 0), (NSA =< NSM; NSM =:=0), (NZA =< NZM; NZM =:=0),
+	(NSA + NSM) =< 2,
+	(
+		ZA > 0,
+		NZA is ZA - 1,
+		NSA is SA +1,
+		NZM = ZM,
+		SM  = NSM,
+		STA = NSTA,
+		STM = NSTM
+	).
+	 			%Einsteigen ziel A
+adj0([STA,STM,SA,SM,ZA,ZM,Ort], 
+	[NSTA,NSTM,NSA,NSM,NZA,NZM,Ort]) :- 
+	number(STA),number(STM),number(SA),number(SM), number(ZA), number(ZM),number(NSA),number(NSM),
+	ziel(Ort),
+	(NSTA =< NSTM; NSTM =:= 0), (NSA =< NSM; NSM =:=0), (NZA =< NZM; NZM =:=0),
+	(NSA + NSM) =< 2,
+	(
+		ZM > 0,
+		NZM is ZM - 1,
+		NSM is SM +1,
+		NZM = ZM,
+		SM  = NSM,
+		STA = NSTA,
+		STM = NSTM
+	).
+	 			%Einsteigen ziel M
 
 ziel(dresden).
 start(berlin).
