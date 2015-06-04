@@ -11,6 +11,7 @@ dlDfs(Node, Goal, Path, DepthLimit, ReturnPath) :-
 	dlDfs(NewNeighbor, Goal, [NewNeighbor|Path], DepthLimit-1, ReturnPath).
 
 idDfsLoop(Start, Goal, D, ReturnPath) :-
+	%writeln(D),
 	dlDfs(Start, Goal, [Start], D, ReturnPath);
 	% Wenn die Tiefensuche mit Schranke D nicht erfolgreich war, wird mit Schranke D+1 weitergesucht.
 	idDfsLoop(Start, Goal, D+1, ReturnPath).
