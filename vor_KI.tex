@@ -69,11 +69,11 @@ Sei $V$ eine Menge von Variablen, $K$ eine Menge von Konstanten, $F$ eine Menge 
 \item Wenn $F,G$ Formeln sind, dann auch $F \wedge G, F\vee G, \neg F$.
 \item Wenn $x$ eine Variable und $F$ eine Formel sind, dann auch $\forall x F$, sowie $\exists x F$.
 \end{itemize}
-\paragraph{Beispiel} 
+\paragraph{Beispiel}
 \begin{itemize}
 \item katze(reni)
 \item $\forall x (\text{katze}(x) \rightarrow \text{haustier}(x)) $
-Syntaxbaum dazu \\* \begin{tikzpicture} 
+Syntaxbaum dazu \\* \begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node{$\forall x$}
@@ -84,7 +84,7 @@ Syntaxbaum dazu \\* \begin{tikzpicture}
         ;
 \end{tikzpicture}
 \item $\forall x(\text{land}(x) \rightarrow \exists y \text{hauptstadt}(x,y))$ \\*
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node{$\forall x$}
@@ -127,7 +127,7 @@ Vorrang der Operatoren:
 
 \paragraph{Beispiel} $\text{land} = \{\text{deutschland},\text{england},\text{frankreich},\text{spanien}\},$\\ $ \text{hauptstadt} = \{(\text{deutschland},\text{berlin}),(\text{england},\text{london}),(\text{frankreich},\text{paris}),(\text{spanien},\text{madrid}) \}$
 
-\paragraph{Rechenregeln} 
+\paragraph{Rechenregeln}
 \begin{itemize}
 \item $\neg \forall x \; F \equiv \exists x \neg F$
 \item $\neg \exists x \; F \equiv \forall x \neg F$
@@ -140,8 +140,8 @@ Vorrang der Operatoren:
 
 Für jede Aussage gibt es eine äquivalente Formel in bereinigter Pränexform.
 
-\subparagraph{Beispiel} \begin{align*} 
-&\forall x ( \text{land} (x) \rightarrow \exists y \text{hauptstadt} (x,y)) &\equiv \\ 
+\subparagraph{Beispiel} \begin{align*}
+&\forall x ( \text{land} (x) \rightarrow \exists y \text{hauptstadt} (x,y)) &\equiv \\
 &\forall x (\neg \text{land}(x) \vee \exists y \text{hauptstadt} (x,y)) &\equiv \\
 &\forall x (\exists y \text{hauptstadt}(x,y) \vee \neg \text{land} (x)) &\equiv\\
 &\forall x \exists y (\neq \text{land}(x) \vee \text{haupstadt}(x,y) ) &\equiv\\
@@ -191,7 +191,7 @@ Grundlegender Aufbau eines Expertensystems
 
 Prolog-Programme sind im Wesentlichen Hornformeln, bei denen alle Variablen allquantisiert sind und die in bereinigter Pränexform vorliegen.
 
-Beispiel 
+Beispiel
 \begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
 katze(reni).
 haustier(X) :-katze(X).
@@ -251,7 +251,7 @@ Die Struktur eines Prolog-Programms lässt sich durch einen Und-Oder-Baum darste
 \begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
 a(X) :- b(X),c(X),d(X).
 \end{lstlisting}
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node(a){$a(X)$}
@@ -266,7 +266,7 @@ Für die Anfrage $a(X)$ werden die Teilziele $b(X),c(X),d(X)$ erzeugt, die alle 
 \begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
 a(X) :- b(X);c(X);d(X).
 \end{lstlisting}
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node{$a(X)$}%ohne Kreisbogen
@@ -279,7 +279,7 @@ Die Anfrage $a(X)$ ist wahr genau dann, wenn eines der Teilziele wahr ist $b(X),
 
 \subsubsection{Suche nach einer Lösung} (d.h. $X$ ist nicht instanziert):\\
 $X$ wird nach unten weitergereicht, bis es auf einer Blattebene an eine Konstante gebunden wird, mit der das zugehörige Teilziel war wird. Der so gefundene Lösungskandidat wird dann nach oben propagiert und für weitere Teilziele verwendet.\\
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node(a){$a(X)$}
@@ -294,7 +294,7 @@ Wenn mit dem gefunden Kandidaten weitere, mit $\wedge$ verknüpfte Teilziele nic
 
 \subparagraph{Beispiel} Aufgabe 4
 Anfrage: $\text{nass}(\text{hochschulstraße})$\\
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node(a){$\text{nass}(\text{hochschulstraße})$}
@@ -315,14 +315,14 @@ Zwei Atome $P,Q$ heißen \underline{unifizierbar}, wenn es eine Ersetzung der in
 
 \subsubsection{Durchsuchen des Baums} Für ein Ziel $P$ wird das Prolog-Programm von oben nach unten durchsucht, bis eine linke Seite einer Klausel(Kopf) mit $P$ unifiziert. Dadurch wird ein neues Ziel erzeugt. Wenn dieses neue Ziel false liefert, wird ein Backtracking ausgeführt, indem eine weitere linke Seite gesucht wird, die mit dem Ziel unifiziert. Innerhalb jeder Klausel wird die rechte Seite von links nach rechts durchsucht.
 \paragraph{Problem bei der Tiefensuche}
-Beispiel: 
+Beispiel:
 \begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
 zug(X,Y) :- zug(Y,X).
 zug(1,2).
 ?- zug(2,1).
 \end{lstlisting}
 Suchbaum\\
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node{zug(2,1)}
@@ -418,13 +418,13 @@ Listen sind induktiv definiert:
 \end{itemize}
 Alternativ kann die Liste auch in der Form $[x_1,\dots,x_n]$ aufgeschrieben werden.
 \subparagraph{Beispiel} für Listen: $[a,b,c], [a|[b,c]], [a,b,c,1,2,[u,v]]$
-\subparagraph{Beispiel} für ein Prädikat auf einer Liste: $\text{member} /2$ z.B. 
+\subparagraph{Beispiel} für ein Prädikat auf einer Liste: $\text{member} /2$ z.B.
 \begin{lstlisting}[numbers=left, tabsize=4, language=Prolog]
 member(X,[X|_]).
 member(X,[_|T]) :- member(X,T).
 \end{lstlisting}
 Suchbaum für die Anfrage $\text{member}(b,[a,b,c,]).$:\\*
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node{member$(b[a,b,c])$}
@@ -432,7 +432,7 @@ Suchbaum für die Anfrage $\text{member}(b,[a,b,c,]).$:\\*
         child{node{member$(b,[b,c])$}%[b|[c]]
             child{node{true}}%X/b
         }
-        
+
 ;
 \end{tikzpicture}
 
@@ -444,7 +444,7 @@ append$(L1,L2,[1,2,3])$ liefert $L1 = [], L2=[1,2,3]; L1=[1], L2=[2,3];$ usw.
 
 \section{Sprachverarbeitung}
 Beispielgrammatik:\\*
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node{Satz}
@@ -480,7 +480,7 @@ satz(In,Rest) :-
 nominalphrase(In,Rest) :- artikel(In,R), nomen(R,Rest).
 verbalphrase(In,Rest) :- verb(In,R), nominalphrase(R,Rest).
 artikel(In,Rest) :- match(die,In,Rest).
-verb(In,Rest) :- 
+verb(In,Rest) :-
     match(jagt,In,Rest).
 nomen(In,Rest) :-
     match(katze,In,Rest);
@@ -495,7 +495,7 @@ match(katze,[maus],R).
 ? false.
 \end{lstlisting}
 \subparagraph{Beispiel} Suchbaum für die Anfrage nominalphrase$([\text{die},\text{katze}],[\;])$\\
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node(a){nominalphrase$([\text{die},\text{katze}],[\;])$}
@@ -521,11 +521,11 @@ nominalphrase(In,Rest) :- artikel(In,R,Genus), nomen(R,Rest,Genus).
 artikel(In,Rest,m) :- match(der,In,Rest).
 artikel(In,Rest,f) :- match(die,In,Rest).
 nomen(In,Rest,m) :- match(kater,In,Rest).
-nomen(In,Rest,f) :- 
+nomen(In,Rest,f) :-
     match(katze,In,Rest);
     match(maus,In,Rest).
 \end{lstlisting}
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node(a){nominalphrase$([\text{die},\text{katze}],[\;])$}
@@ -580,7 +580,7 @@ findall(X,P,L): sucht alle X, für die P wahr ist, und erzeugt daraus die Liste 
 not(P): ist wahr genau dann, wenn P false liefert (Negation by failure).
 
 \subsubsection{Nachteil der Breitensuche} Exponentieller Speicherbedarf für Suchbäume.
-\subsubsection{Nachteil der Tiefensuche} 
+\subsubsection{Nachteil der Tiefensuche}
 \begin{itemize}
 \item Wenn bereits besuchte Knoten nicht speichert werden: Zyklen möglich.
 
@@ -592,7 +592,7 @@ Lösung: In der Tiefensuche werden nur die Knoten auf dem aktuellen Pfad gespeic
 
 \end{itemize}
 
-\subsection{Iterative Tiefensuche (IDDFS, Iterative Deepering Depth First Search)} 
+\subsection{Iterative Tiefensuche (IDDFS, Iterative Deepering Depth First Search)}
 Wir verwenden eine Tiefenschranke, die sukzessive erhöht wird, bis das Ziel gefunden wird.\\
 Da in einem Suchbaum mit Verzweigungsfaktor $b>1$ fast alle Knoten Blätter sind, fällt die meiste Rechenzeit zum Durchsuchen der Blattebene an. Durch eine genaue Rechnung lässt sich zeigen, dass die Laufzeit der iterativen Tiefensuche nur einen kleinen Faktor höher ist, als die der Tiefensuche.
 
@@ -624,16 +624,16 @@ Für den Zielknoten $v$ gilt : \[ f(v) = 0\] Die Knoten mit der niedrigsten Bewe
 Die gierige Suche verwendet in jedem Schritt den Knoten, der dem Ziel am nächsten liegt bzw., der die günstigste Entfernungsschätzung bis zum Ziel hat.
 \subparagraph{Beispiel} Suche nach Wegen zu einem Ort.
 Heuristische Bewertungsfunktion: $f(s) =$ Luftlinienentfernung von $s$ zum Ziel.\\
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node{A}
     child{node(C){C}}
     child{node(B){B}};
-    
+
 \node{Z};
 \end{tikzpicture}\\
-Die kürzeste Strecke von A nach Z ist A-B-Z (100km). Wenn $f(C) < f(B)$, findet die gierige Suche jedoch die Strecke A-C-Z, die 11 km länger ist. 
+Die kürzeste Strecke von A nach Z ist A-B-Z (100km). Wenn $f(C) < f(B)$, findet die gierige Suche jedoch die Strecke A-C-Z, die 11 km länger ist.
 \subparagraph{Folgerung} Die gierige Suche ist nicht optimal.
 
 \subsection{$\text{A}^*$-Suche}
@@ -652,7 +652,7 @@ Für den aktuellen Knoten $v$ werden die noch unbesuchten Nachbarn bestimmt und 
 \paragraph{Effiziente Implementierung} Ein \emph{Min-Heap} ist ein Binärbaum mit der Eigenschaft: Jeder Knoten besitzt einen Wert, der $\leq$ der Werte seiner Nachfolger ist.
 
 \subparagraph{Beispiel}
-\begin{tikzpicture} 
+\begin{tikzpicture}
 \tikzstyle{level 1} = [sibling distance = 50 mm]
 \tikzstyle{level 2} = [sibling distance = 30 mm]
 \node{1}
@@ -694,13 +694,118 @@ Geeignete Heuristiken für die Suche im 8-Puzzle:
 Diese Heuristik ist zulässig, da für jedes Plättchen mindestens diese Anzahl an Verschiebungen nötig ist.
 \end{enumerate}
 
+\subsection{Spiele mit Gegner}
+Wir bewerten Stellungen durch eine Nutzenfunktion. Es gibt zwei Spieler:
+\begin{itemize}
+\item Max: Max versucht, die Nutzenfunktion zu minimieren.
+\item Min: Min versucht, die Nutzenfunktion zu minimieren.
+\end{itemize}
+Einfachster Fall einer Nutzenfunktion:
+\begin{itemize}
+\item 1: Max hat gewonnen
+\item 0: Unentschieden
+\item -1: Min hat gewonnen
+\end{itemize}
+Die Nutzenfunktion lässt sich im Allgemeinem nur für Endzustände des Spiels berechnen.\\
+Da wir nicht wissen, wie der Gegner zieht, betrachten wir alle möglichen Züge es Gegners und nehmen an, dass dieser optimal spielt. Damit berechnen wir einen Nutzwert für jeden Knoten (minimax-value). Dieser ergibt sich als
+\begin{itemize}
+\item Maximum der Bewertungen der Nachfolgeknoten, wenn Max am Zug ist.
+\item Minimum der Bewertungen der Nachfolgeknoten, wenn Min am Zug ist.
+\end{itemize}
+Daraus erhalten wir eine rekursive Formel, um minimax zu berechnen:
+\[ \text{minimax} \, (n) = \left \{ \begin{array}{lr} \text{utility}\, (n) & \text{wenn } n  \text{ ein} \text{ Endzustand ist} \\
+\max{\{ \text{minimax}\, (s) | s \in \text{succ}\, (n) \}} & \text{wenn } n \text{ ein Max-Knoten ist} \\
+\min{\{ \text{minimax} \, (s) | s \in \text{succ}\, (n) \}} & \text{wenn } n \text{ ein Min-Knoten ist} \\
+\end{array} \right. \]
+Dabei sei $\text{succ} \, (n)$ die Menge der Nachfolger des Knotens $n$ im Suchbaum.
+\subparagraph{Beispiel} $\Delta$ : Max $\nabla$ : Min\\*
+\begin{tikzpicture}
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 20 mm]
+\node{$\Delta$ 3}
+    child{node{$\nabla$ 3}
+        child{node{$\Delta$ 3}}
+        child{node{$\Delta$ 12}}
+        child{node{$\Delta$ 8}}
+        }
+    child{node{$\nabla$ 2}
+        child{node{$\Delta$ 2}}
+        child{node{$\Delta$ 4}}
+        child{node{$\Delta$ 6}}
+    }
+    child{node{$\nabla$ 2}
+        child{node{$\Delta$ 14}}
+        child{node{$\Delta$ 5}}
+        child{node{$\Delta$ 2}}
+    }
 
+;
+\end{tikzpicture}\\
+Die Minimax-Werte lassen sich mit einer Tiefensuche berechnen. Laufzeit dazu: $\mathcal{O} (b^d)$, wenn der Suchbaum die Tiefe $d$ und den Verzweigungsfaktor $b$ besitzt.\\
+Nachteil dieser Art der Berechnung: Es müssen alle Knoten erzeugt und deren minimax-Werte berechnet werden. Wir können Rechenzeit einsparen wenn Knoten ausgelassen werden, deren minimax-Werte keine Auswirkung auf den aktuellen Knoten haben.
+\subparagraph{Beispiel} $\Delta$ : Max $\nabla$ : Min\\*
+\begin{tikzpicture}
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 20 mm]
+\node{$\Delta [3; 3 ] \alpha = 3$}
+    child{node{$\nabla [3;3] \beta = 3$}
+        child{node{$\Delta$ 3}}
+        child{node{$\Delta$ 12}}
+        child{node{$\Delta$ 8}}
+        }
+    child{node{$\nabla [-\infty; 2] \beta =2]$}
+        child{node{$\Delta$ 2}}
+        child{node{$\times$}}
+        child{node{$\times$}}
+    }
+    child{node{$\nabla [2;2] \beta = 2$}
+        child{node{$\Delta$ 14}}
+        child{node{$\Delta$ 5}}
+        child{node{$\Delta$ 2}}
+    }
 
+;
+\end{tikzpicture}\\
+Im Laufe der Berechnung werden folgende Werte aktualisiert:
+\begin{itemize}
+\item $\alpha$-Wert: Untere Grenze des Minimax-Wertes eines Max-Knotens. Der $\alpha$-Wert bleibt gleich oder wird größer.
+\item $\beta$-Wert: Obere Grenze des Minimax-Wertes eines Min-Knotens. Der $\beta$-Wert bleibt gleich oder wird kleiner.
+\end{itemize}
+In zwei Fällen kann der Suchbaum beschnitten werden:
+\begin{itemize}
+\item Ist der $\beta$-Wert eines Min-Knotens $\leq \alpha$-Wert des darüber liegenden Max-Knotens, dann muss der Min-Knoten nicht weiter untersucht werden.
+\end{itemize}
+Die Effizienz dieser $\alpha$-$\beta$-Kürzung ist abhängig von der Reihenfolge, in der die Knoten besucht werden.\\
+Vorteilhaft: Zuerst gute Knoten besuchen, z.B.: Schach: Erst Würfe prüfen, dann Bedrohungen, dann Vorwärtszüge, zuletzt Rückwertszüge.\\
+Im besten Fall ist die Laufzeit $\mathcal{O} (b^{\frac{d}{2}})$.
 
+\subsection{Bewertungsfunktionen} Für Spiele wie Schach ist auch die Laufzeit der $\alpha$-$\beta$-Suche zu groß. Die Suche wird daher abgebrochen bevor ein Endknoten erreicht wird. Innere Knoten werden dazu mit einer Funktion bewertet, z.B.
+\[ \text{\# Bauern} + 3 \cdot \text{\# Läufer} + 5\cdot \text{\# Türme} + 9 \cdot \text{\# Damen} \]
 
+\section{Schließen mit Unsicherheit}
+\subsection{Bayes-Netze}
+\paragraph{Beispiel} Bob hat in seinem Haus eine Alarmanlage installiert. Seine Nachbarn John und Mary rufen ihm im Büro an, wenn sie den Alarm hören. Bob modelliert deren Zuverlässigkeit durch
+\begin{align*}
+P(J | Al ) &= 0,9  &P(M | Al) &= 0,7 \\
+P(J | \bar{Al} ) &= 0,05 &P(M | \bar{Al} ) &= 0,01\\
+\end{align*}
+Aber auch ein Erdbeben kann den Alarm auslösen:
+\begin{align*}
+P(Al | Ein,Erd) &= 0,95 &P(Al | Ein, \overline{Erd}) &= 0,94 \\
+P(Al | \overline{Ein},Erd) &= 0,29 &P(Al | \overline{Ein}, \overline{Erd} ) &= 0,001\\
+\end{align*}
+Ferner sei $P(Ein) = 0,01, P(Erd) = 0,002$. Ein, Erd seien unabhängig.
 
-
-
+\subsubsection{Graphische Darstellung als Bayes-Netz}
+\begin{tikzpicture}
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+%TODO 2015-06-15T12:30
+\end{tikzpicture}\\
+Wenn John und Mary unabhängig auf einen Alarm reagieren gilt
+\[ P(J,M|Al) = P(J|Al) \cdot P(M | Al) \]
+Wenn wir annehmen, dass John nicht auf einen Einbruch, sondern nur auf einen Alarm reagiert, gilt ferner
+\[ P(J,Ein | Al) = P(J|Al) \cdot P(Ein |Al) \]
 
 
 
