@@ -19,12 +19,40 @@ adj( ([S|T], P1), ([S|U], P2) ) :- other_player(P1, P2), adj( (T, P1), (U, P2) )
 
 % Alle Kästchen angekreuzt
 full([]).
-full([H|T]) :- not(free(H)), full(T).
+full([[H|_T]|B]) :- not(free(H)), full(B).%Prüft ob erste Zeile belegt
+
+%I 1 bis 10 Zeilen
+test_row0(Board,I,A) :- flatten(Board,FB),
+				I1 is I+5*0, I2 is I+5*1,
+				I3 is I+5*2, I4 is I+5*3,
+				nth1(I1,FB,A), nth1(I2,FB,A),
+				nth1(I3,FB,A), nth1(I4,FB,A).
+test_row(Board,A) :- test_row0(Board,1,A); test_row0(Board,2,A);
+	test_row0(Board,3,A); test_row0(Board,4,A); test_row0(Board,5,A); test_row0(Board,6,A); test_row0(Board,7,A); test_row0(Board,8,A); test_row0(Board,9,A); test_row0(Board,10,A).
+
+test_diagp0(Board,I,A) :- flatten(Board,FB),
+				I1 is I+5*0, I2 is I+5*1+1,
+				I3 is I+5*2+2, I4 is I+5*3+3,
+				nth1(I1,FB,A), nth1(I2,FB,A),
+				nth1(I3,FB,A), nth1(I4,FB,A).
+test_diagp(Board,A) :- test_diagp0(Board,1,A); test_diagp0(Board,2,A);
+	test_diagp0(Board,6,A); test_diagp0(Board,7,A).
+test_diagn0(Board,I,A) :- flatten(Board,FB),
+				I1 is I+5*0, I2 is I+5*1-1,
+				I3 is I+5*2-2, I4 is I+5*3-3,
+				nth1(I1,FB,A), nth1(I2,FB,A),
+				nth1(I3,FB,A), nth1(I4,FB,A).
+test_diagn(Board,A) :- test_diagn0(Board,5,A); test_diagn0(Board,4,A);
+	test_diagn0(Board,9,A); test_diagn0(Board,10,A).
 
 utility(Board, U) :-
-	(member(Board, [[A,A,A, _,_,_, _,_,_], [_,_,_, A,A,A, _,_,_], [_,_,_, _,_,_, A,A,A],
-					[A,_,_, A,_,_, A,_,_], [_,A,_, _,A,_, _,A,_], [_,_,A, _,_,A, _,_,A],
-					[A,_,_, _,A,_, _,_,A], [_,_,A, _,A,_, A,_,_]]),
+	((
+		member([_,A,A,A,A],Board);
+		member([A,A,A,A,_],Board);
+		test_row(Board,A);
+		test_diagp(Board,A);
+		test_diagn(Board,A)
+	),
 	 (A == x, U is 1;
 	  A == o, U is -1)
 	);
@@ -38,4 +66,12 @@ minimax(Board, Player, Value) :-
 	).
 
 % adj(([[f,f,f,f,f],[x,o,o,o,x],[f,f,x,x,o],[f,f,o,x,x],[f,f,f,f,f]],o),([[f,f,f,f,f],[x,o,o,o,x],[f,o,x,x,o],[f,f,o,x,x],[f,f,f,f,f]],x)).
-%([[f,f,f,f,f],[x,o,o,o,x],[f,f,x,x,o],[f,f,o,x,x],[f,f,f,f,f]],o)
+% utility([[f,x,o,x,o],[f,o,x,o,x],[f,o,x,o,x],[f,f,f,f,x],[f,o,x,o,x]],U).
+%Erster Test
+% minimax([[f,f,f,f,f],[x,o,o,o,x],[f,f,x,x,o],[f,f,o,x,x],[f,f,f,f,f]],o,U).
+
+%Zweiter Test
+% x, 1
+% minimax([[f,x,o,x,o],[f,o,x,o,x],[f,o,x,o,x],[f,f,f,f,f],[f,o,x,o,x]],x,U).
+% o, -1
+% % minimax([[f,x,o,x,o],[f,o,x,o,x],[f,o,x,o,x],[f,f,f,f,f],[f,o,x,o,x]],o,U).
