@@ -794,7 +794,7 @@ Aber auch ein Erdbeben kann den Alarm auslösen:
 P(Al | Ein,Erd) &= 0,95 &P(Al | Ein, \overline{Erd}) &= 0,94 \\
 P(Al | \overline{Ein},Erd) &= 0,29 &P(Al | \overline{Ein}, \overline{Erd} ) &= 0,001\\
 \end{align*}
-Ferner sei $P(Ein) = 0,01, P(Erd) = 0,002$. Ein, Erd seien unabhängig.
+Ferner sei $P(Ein) = 0,001; P(Erd) = 0,002$. Ein, Erd seien unabhängig.
 
 \subsubsection{Graphische Darstellung als Bayes-Netz}
 \begin{tikzpicture}
@@ -806,6 +806,43 @@ Wenn John und Mary unabhängig auf einen Alarm reagieren gilt
 \[ P(J,M|Al) = P(J|Al) \cdot P(M | Al) \]
 Wenn wir annehmen, dass John nicht auf einen Einbruch, sondern nur auf einen Alarm reagiert, gilt ferner
 \[ P(J,Ein | Al) = P(J|Al) \cdot P(Ein |Al) \]
+
+\subsubsection{Semantik von Bayes-Netzen}
+Kanten beschreiben (bedingte) Unabhängigkeit von Ereignissen\\
+%TODO 2015-06-22
+\begin{tikzpicture}
+\tikzstyle{level 1} = [sibling distance = 50 mm]
+\tikzstyle{level 2} = [sibling distance = 30 mm]
+
+\node{C}%TODO Gerichtete Kanten von C nach A und B
+    child{node{A}}
+    child{node{B}}
+;
+\end{tikzpicture}\\
+Ein Bayes-Netz muss ein DAG (directed acyclic graph) sein. Dann können die Knoten topologisch sortiert werden. Dann gilt
+\[ P(An| A_1, \dots , A_{n-1}) = P(An | \text{Eltern} (A_n)) \]
+Es folgt
+\begin{align*} P(A_1,\dots,A_n) &= \\
+P(A_n|A_1,\dots,A_{n-1}) &\cdot P(A_1,\dots,A_{n-1}) &=\\
+P(A_n |A_1,\dots,A_{n-1}) &\cdot P(A_{n-1} | A_1,\dots,A_{n-2}) &\cdot P(A_1,\dots,A_{n-2}) &= \\
+\vdots \\
+\prod\limits_{i=1}^{n} P(A_i | A_1, \dots, A_{i-1}) &= \\
+\prod\limits_{i=1}^n P(A_i |\text{Eltern} (A_i))\\
+(\text{wobei} P(A_1 | A_1,\dots,A_0) := P(A_1))\\
+\end{align*}
+ÜA: Berechne P(J,Al,Ein,Erd)
+
+UÄ: Berechne P(J,Ein): Für diskunkte Ereignisse $A_1,\dots,A_n$ gilt
+\[ P(\sum\limits_{i=1}^n A_i) = \sum\limits_{i=1}^n P(A_i) \]
+Diskunkte Zerlegung:
+\[ P(A) = P(A\cap B + A\cap \bar{B} ) = P(A,B) + P(A,\bar{B}) \]
+\[ P(J,Ein) = P(J,\bar{Al},Ein,\bar{Erd}) + P(J,\bar{Al},Ein,Erd) + P(J,Al,Ein,\bar{Erd}) + P(J,Al,Ein,Erd) = 0,000849 \]
+Ebenso: $P(J) = 0,052$\\
+Damit ergibt sich $P(Ein|J)= \frac{P(Ein,J)}{P(J)} = 0,016 $\\
+Ebenso $P(Ein | J,M) = \frac{P(Ein,J,M)}{P(J,M)} = 0,284$
+
+
+
 
 
 
