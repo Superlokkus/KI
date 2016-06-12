@@ -841,12 +841,75 @@ Ebenso: $P(J) = 0,052$\\
 Damit ergibt sich $P(Ein|J)= \frac{P(Ein,J)}{P(J)} = 0,016 $\\
 Ebenso $P(Ein | J,M) = \frac{P(Ein,J,M)}{P(J,M)} = 0,284$
 
+\subsection{NP-hart} Eine Sprache L heißt NP-vollständig, wenn:
+\begin{itemize}
+\item $\text{L} \in \text{NP}$
+\item L ist NP-hart
+\end{itemize}
+NP-hart bedeutet, dass jedes Problem in NP effizient übersetzt werden kann in ein Entscheidungsproblem für L.\\
+Die exakte Inferenz in Bayes'schen Netzen ist NP-hart.
 
+Eines der klassischen NP-vollständigen Probleme ist $ \text{3KNF-SAT} = \{ F | F$ ist eine Formel in konjunktiver Normalform(KNF) mit 3 literalen pro Klausel und $F$ ist erfüllbar $\}$.
+\subparagraph{Beispiel} Eine Formel in 3KNF-SAT: \[ (A \vee B \vee \neg C) \wedge ( \neg A \vee B \vee \neg D) \]
+Ein Algorithmus für die exakte Inferenz in \textsc{Bayes}'schen Netzen (Berechnung von Wahrscheinlichkeiten) lässt sich nutzen, um 3KNF-SAT zu entscheiden.
+\subparagraph{Beispiel} $F= (A \vee B \vee C) \wedge (C \vee D \vee \neg A) \wedge (B \vee C \vee \neg D)$\\
+Aus dieser Formel lässt sich folgendes \textsc{Bayes}'sches Netz erzeugen:
+%TODO 2015-06-29T11:34
 
+Der Knoten 2 besitzt folgende bedingte Wahrscheinlichkeiten:\\*
+\begin{tabular}{ccc|c}
+C & D & A & P(2) \\ \hline
+f & f & f & 1\\
+f & f & w & 0\\
+f & w & f & 1\\
+f & w & w & 1\\
+w & f & f & 1\\
+w & f & w & 1\\
+w & w & f & 1\\
+w & w & w & 1\\
+\end{tabular}\\
+Der Knoten $\wedge$ bestitzt die bedingten Wahrscheinlichkeiten:\\*
+\begin{tabular}{ccc|c}
+1 & 2 & 3 & P($\wedge$)\\ \hline
+f & f & f & 0\\
+f & f & w & 0\\
+& \vdots & & 0 \\
+w & w & w & 1\\
+\end{tabular}\\
+Dann gilt: $F$ ist erfüllbar $\Leftrightarrow P(\wedge) > 0$.
 
+Da die exakte Inferenz in \textsc{Bayes}'schen Netzen NP-hart ist, gibt keinen effizienten (d.h. polynomiellen) Algorithmus zur Berechnung der Wahrscheinlichkeiten. Ausweg:\\
+Approximative Inferenz.
 
+Gegeben eine Verteilung, wie kann man Stichproben daraus ziehen?
+\subparagraph{Beispiel} Würfel: 6 Ausfälle, Verteilung ist $(\frac{1}{6},\frac{1}{6},\frac{1}{6},\frac{1}{6},\frac{1}{6},\frac{1}{6})$
 
+Wir ziehen eine Zufallszahl gleichverteilt in $[0,1]$. Das Intervall $[0,1]$ wird nun unterteilt in 6 Intervalle, die dem Würfel der Zahlen 1-6 entsprechen.
 
+\subsection{Algorithmus direktes Sampling}
+\paragraph{Vorraussetzung} Netz ist topologisch sortiert.
+\begin{lstlisting}[numbers=left, tabsize=4, language=C]
+for i = 1 to n
+  Erzeuge einen Wert fuer
+  P(X_i | Eltern(X_i))
+  gemaess der bedingten Verteilung von X_i,
+  gegeben die bereits erzeugten Werte fuer Eltern (X_i).
+\end{lstlisting}
+Auf diese Weise wird eine Stichprobe $(x_1,\dots,x_n)$ erzeugt.
+\paragraph{Korrektheit des Verfahrens} $P(x_1,\dots,x_n) = \prod\limits_{i=1}^{n} P(X_i | \text{Eltern} \, (X_i)) $\\
+Dies ist die Wahrscheinlichkeit der Verteilung gemäß Formel aus letzter Vorlesung.
+\subsection{Berechnen von bedingten Wahrscheinlichkeiten}
+\subsubsection{Ablehnungssampling}
+\begin{lstlisting}[numbers=left, tabsize=4, language=C]
+for i = 1 to k
+  Erzeuge eine Stichprobe x mit dem
+  Algorithmus direktes Sampling
+  Verwerfe x, wenn x nicht konsistent ist
+  mit der Bedingung e, fuer die P(X | e) berechnet
+  werden soll
+Berechne, wie oft das Ereignis X in den nicht verworfenen Samples vorkommt.
+\end{lstlisting}
 
+Der Algorithmus Ablehnungs-Sampling ist ungeeignet, wenn $P(e)$ klein ist. Für $e = e_1,\dots,e_n$ gilt insbesondere, dass $P(e)$ exponentiell kleiner wird.
 
 \end{document}

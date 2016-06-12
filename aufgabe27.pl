@@ -13,8 +13,8 @@ belegbar(K,S) :- free(K), (S == []; not(nth0(0,S,f))).
 % jedes Element eins aus {f,x,o} ist bei dem Player der Spieler am Zug ist.
 
 
-adj( ([[K|S]|B], P1), ([[P1|S]|B], P2) ) :- belegbar(K,S), other_player(P1, P2),!.%Elementweise
-adj( ([[S|T]|B], P1), ([[S|U]|B], P2) ) :- other_player(P1, P2), adj( ([T|B], P1), ([U|B], P2) ),!. %Nicht nur oberstes Element
+adj( ([[K|S]|B], P1), ([[P1|S]|B], P2) ) :- belegbar(K,S), other_player(P1, P2).%Elementweise
+adj( ([[S|T]|B], P1), ([[S|U]|B], P2) ) :- other_player(P1, P2), adj( ([T|B], P1), ([U|B], P2) ). %Nicht nur oberstes Element
 adj( ([S|T], P1), ([S|U], P2) ) :- other_player(P1, P2), adj( (T, P1), (U, P2) ).%Spalten durchprobieren
 
 % Alle Kästchen angekreuzt
